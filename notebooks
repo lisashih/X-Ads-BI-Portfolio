@@ -1,0 +1,45 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# 設定樣式
+sns.set(style="whitegrid")
+
+# 讀取 X 廣告數據集
+df = pd.read_csv("gigabyte_x_ads_data.csv")
+
+# 確認數據基本資訊
+display(df.info())
+display(df.describe())
+
+# 可視化：CTR（點擊率）分佈
+plt.figure(figsize=(8, 5))
+sns.histplot(df["CTR"], bins=20, kde=True, color="blue")
+plt.title("CTR Distribution")
+plt.xlabel("CTR")
+plt.ylabel("Frequency")
+plt.show()
+
+# 可視化：CPC（每次點擊成本）比較
+plt.figure(figsize=(8, 5))
+sns.boxplot(x="campaign", y="CPC", data=df)
+plt.title("CPC Comparison by Campaign")
+plt.xlabel("Campaign")
+plt.ylabel("CPC (USD)")
+plt.xticks(rotation=45)
+plt.show()
+
+# 可視化：ROAS（投資回報率）趨勢
+plt.figure(figsize=(10, 6))
+sns.lineplot(x="date", y="ROAS", hue="campaign", data=df)
+plt.title("ROAS Trend by Campaign")
+plt.xlabel("Date")
+plt.ylabel("ROAS")
+plt.xticks(rotation=45)
+plt.legend(title="Campaign")
+plt.show()
+
+# 廣告成效評估：各 Campaign 平均值
+campaign_performance = df.groupby("campaign")[["CTR", "CPC", "ROAS"]].mean().round(3)
+display(campaign_performance)
